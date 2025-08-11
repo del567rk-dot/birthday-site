@@ -46,7 +46,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    #photoScreen, #videoScreen {
+    #photoScreen {
       position: absolute;
       top: 0;
       left: 0;
@@ -59,7 +59,7 @@
       perspective: 1200px;
     }
 
-    #photo, #video {
+    #photo {
       width: 90vw;
       max-height: 90vh;
       border: 8px solid white;
@@ -108,10 +108,6 @@
     <img id="photo" src="" alt="Фото">
   </div>
 
-  <div id="videoScreen">
-    <video id="video" src="video.mp4" controls></video>
-  </div>
-
   <audio id="music" src="music.mp3" loop></audio>
 
   <script>
@@ -122,58 +118,29 @@
     ];
     let current = 0;
     const photoDuration = 1400;
-    const videoTriggerIndex = Math.floor(Math.random() * photos.length);
-    let videoPlayed = false;
 
-    document.getElementById('message').textContent =
-      'Привет! Сейчас ты читаешь этот текст и не подозреваешь, что стала старше на один год. Я сделал это от чистого сердца. Спасибо тебе за то, что появилась в моей жизни с 2018 года. Никогда не забуду все наши прогулки, общение, секреты и многое другое — это очень важно для меня. Спасибо за все ночи напролёт, за поддержку, за наши кайфовые скандалы (с тобой очень классно ссориться, а потом мириться). Если вдруг ты меня задолбаешь — я построю рядом с твоим домом церковь (естественно рядом будет Land Cruiser) и буду молиться, ведьма ОЧЕНЬ ГРОМКО ЧТОБЫ ТЫ СЛЫШАЛА 😄. Желаю тебе много здоровья, удачи и миллионы денег. Оставайся такой же крутой и весёлой, и не злись на меня если иногда заставляю нервничать(я же должен вызывать эмоции)  😘';
+    document.getElementById('message').textContent = 'Привет! Сейчас ты читаешь этот текст и не подозреваешь, что стала старше на один год. Я сделал это от чистого сердца. Спасибо тебе за то, что появилась в моей жизни с 2018 года. Никогда не забуду все наши прогулки, общение, секреты и многое другое — это очень важно для меня. Спасибо за все ночи напролёт, за поддержку, за наши кайфовые скандалы (с тобой очень классно ссориться, а потом мириться). Если вдруг ты меня задолбаешь — я построю рядом с твоим домом церковь (естественно рядом будет Land Cruiser) и буду молиться, ведьма ОЧЕНЬ ГРОМКО ЧТОБЫ ТЫ СЛЫШАЛА 😄. Желаю тебе много здоровья, удачи и миллионы денег. Оставайся такой же крутой и весёлой, и не злись на меня если иногда заставляю нервничать(я же должен вызывать эмоции) 😘';
 
     function startShow() {
       document.getElementById('textScreen').style.display = 'none';
       document.getElementById('photoScreen').style.display = 'flex';
-
       const music = document.getElementById('music');
       music.currentTime = 195;
       music.play();
-
       showNextPhoto();
     }
 
     function showNextPhoto() {
-      if (current === videoTriggerIndex && !videoPlayed) {
-        videoPlayed = true;
-        startVideo();
-        return;
-      }
-
       const img = document.getElementById('photo');
       img.classList.remove('spin3d');
       void img.offsetWidth;
-
       img.src = photos[current];
       img.onload = () => {
         img.classList.add('spin3d');
       };
-
       current = (current + 1) % photos.length;
       setTimeout(showNextPhoto, photoDuration);
-    }
-
-    function startVideo() {
-      document.getElementById('photoScreen').style.display = 'none';
-      document.getElementById('videoScreen').style.display = 'flex';
-
-      const video = document.getElementById('video');
-      video.currentTime = 0;
-      video.play();
-
-      video.onended = () => {
-        document.getElementById('videoScreen').style.display = 'none';
-        document.getElementById('photoScreen').style.display = 'flex';
-        setTimeout(showNextPhoto, photoDuration);
-      };
     }
   </script>
 </body>
 </html>
-
