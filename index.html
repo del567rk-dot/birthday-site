@@ -2,44 +2,33 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>С Днём Рождения</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
       text-align: center;
       background-color: #fce4ec;
       font-family: Arial, sans-serif;
     }
-    h1 {
-      font-size: 6vw;
-      margin-top: 5vh;
-      color: #d81b60;
-    }
     #message {
-      font-size: 5vw;
-      margin-top: 3vh;
+      font-size: 2em;
+      margin-top: 20px;
       color: #d81b60;
-      padding: 0 5vw;
     }
     #photo {
-      width: 90vw;
-      max-width: 600px;
-      margin-top: 3vh;
+      max-width: 80%;
+      margin-top: 20px;
       border-radius: 10px;
       transition: opacity 1s ease-in-out;
       opacity: 0;
     }
     button {
-      padding: 1em 2em;
-      font-size: 4vw;
+      padding: 10px 20px;
+      font-size: 1.2em;
       background-color: #d81b60;
       color: white;
       border: none;
-      border-radius: 5px;
       cursor: pointer;
-      margin-top: 5vh;
+      margin-top: 50px;
     }
   </style>
 </head>
@@ -52,18 +41,20 @@
 
   <script>
     const photos = [
-      "photo1.jpg", "photo2.jpg", "photo3.jpg", "photo4.jpg",
-      "photo5.jpg", "photo6.jpg", "photo7.jpg", "photo8.jpg",
-      "photo9.jpg", "photo10.jpg", "photo11.jpg"
+      "photo1.jpg", "photo2.jpg", "photo3.jpg", "photo4.jpg", "photo5.jpg",
+      "photo6.jpg", "photo7.jpg", "photo8.jpg", "photo9.jpg", "photo10.jpg", "photo11.jpg"
     ];
     let current = 0;
 
     function startShow() {
-      document.getElementById('message').textContent = 'С Днём Рождения, спасибо тебе за всё!';
+      document.getElementById('message').textContent =
+        'Привет! Сейчас ты читаешь этот текст и не подозреваешь, что стала старше на один год. Я сделал это от чистого сердца. Спасибо тебе за то, что появилась в моей жизни с 2018 года. Никогда не забуду все наши прогулки, общение, секреты и многое другое — это очень важно для меня. Спасибо за все ночи напролёт, за поддержку, за наши кайфовые скандалы (с тобой очень классно ссориться, а потом мириться). Если вдруг всё станет сложно и я не справлюсь — я построю рядом с домом церковь (естественно рядом будет Land Cruiser) и буду молиться, ведьма 😄. Желаю тебе много здоровья, удачи и миллионы денег — деньги, кстати, решают многое.';
+      
       const music = document.getElementById('music');
       music.currentTime = 30;
       music.play();
-      showNextPhoto();
+
+      setTimeout(showNextPhoto, 8000); // задержка перед фото
     }
 
     function showNextPhoto() {
@@ -71,7 +62,9 @@
       img.style.opacity = 0;
       setTimeout(() => {
         img.src = photos[current];
-        img.onload = () => { img.style.opacity = 1; };
+        img.onload = () => {
+          img.style.opacity = 1;
+        };
         current = (current + 1) % photos.length;
         setTimeout(showNextPhoto, 3000);
       }, 500);
