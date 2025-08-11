@@ -15,21 +15,23 @@
     #textScreen {
       background-color: #fce4ec;
       color: #d81b60;
-      min-height: 100vh;
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: flex-start;
+      align-items: center;
       padding: 5vw;
       box-sizing: border-box;
       text-align: center;
       overflow-y: auto;
+      position: relative;
     }
     #message {
       font-size: calc(16px + 1.2vw);
       line-height: 1.4em;
       animation: fadeIn 3s ease-in-out;
       margin-bottom: 100px;
+      padding-bottom: 80px;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
@@ -65,11 +67,8 @@
       100% { opacity: 1; }
     }
     button {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
+      margin-top: auto;
+      margin-bottom: 20px;
       padding: 12px 24px;
       font-size: 1.2em;
       background-color: #d81b60;
