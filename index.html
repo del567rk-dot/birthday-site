@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>С Днём Рождения</title>
+  <style>
+    body {
+      text-align: center;
+      background-color: #fce4ec;
+      font-family: Arial, sans-serif;
+    }
+    #message {
+      font-size: 2em;
+      margin-top: 20px;
+      color: #d81b60;
+    }
+    #photo {
+      max-width: 80%;
+      margin-top: 20px;
+      border-radius: 10px;
+      transition: opacity 1s ease-in-out;
+      opacity: 0;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1.2em;
+      background-color: #d81b60;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎉 Поздравление 🎉</h1>
+  <button onclick="startShow()">Нажми меня</button>
+  <div id="message"></div>
+  <img id="photo" src="" alt="Поздравление">
+  <audio id="music" src="music.mp3"></audio>
+
+  <script>
+    const photos = [
+      "photo1.jpg", "photo2.jpg", "photo3.jpg", "photo4.jpg",
+      "photo5.jpg", "photo6.jpg", "photo7.jpg", "photo8.jpg",
+      "photo9.jpg", "photo10.jpg", "photo11.jpg"
+    ];
+    let current = 0;
+
+    function startShow() {
+      document.getElementById('message').textContent = 'С Днём Рождения, спасибо тебе за всё!';
+      const music = document.getElementById('music');
+      music.currentTime = 30;
+      music.play();
+      showNextPhoto();
+    }
+
+    function showNextPhoto() {
+      const img = document.getElementById('photo');
+      img.style.opacity = 0;
+      setTimeout(() => {
+        img.src = photos[current];
+        img.onload = () => { img.style.opacity = 1; };
+        current = (current + 1) % photos.length;
+        setTimeout(showNextPhoto, 3000);
+      }, 500);
+    }
+  </script>
+</body>
+</html>
