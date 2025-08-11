@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>С Днём Рождения</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
       background-color: #fce4ec;
+      font-family: Arial, sans-serif;
       overflow: hidden;
     }
     #textScreen, #photoScreen {
@@ -21,41 +22,59 @@
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      padding: 40px;
+      padding: 5vw;
       box-sizing: border-box;
+      text-align: center;
     }
     #textScreen {
       background-color: #fce4ec;
       color: #d81b60;
-      font-size: 1.6em;
-      text-align: center;
+    }
+    #message {
+      font-size: calc(16px + 1.2vw);
+      line-height: 1.4em;
+      animation: fadeIn 3s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     #photoScreen {
       background-color: black;
       display: none;
     }
     #photo {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 10px;
-      transition: opacity 1s ease-in-out;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      border-radius: 0;
       opacity: 0;
     }
+    @keyframes fadePhoto {
+      0% { opacity: 0; transform: scale(1.05); filter: brightness(1.2); }
+      50% { opacity: 1; transform: scale(1); filter: brightness(1); }
+      100% { opacity: 1; }
+    }
     button {
-      padding: 15px 30px;
-      font-size: 1.5em;
+      padding: 12px 24px;
+      font-size: 1.2em;
       background-color: #d81b60;
       color: white;
       border: none;
       cursor: pointer;
       margin-top: 30px;
     }
+    #qr {
+      margin-top: 20px;
+      width: 150px;
+    }
   </style>
 </head>
 <body>
   <div id="textScreen">
-    <h1>🎉 Поздравление от Кирилла Александаровича 🎉</h1>
+    <h1>🎉 Поздравление 🎉</h1>
     <p id="message"></p>
+    <img id="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://del567rk-dot.github.io/birthday-site/" alt="QR-код">
     <button onclick="startShow()">Нажми меня</button>
   </div>
 
@@ -63,24 +82,24 @@
     <img id="photo" src="" alt="Фото">
   </div>
 
-  <audio id="music" src="music.mp3"></audio>
+  <audio id="music" src="music.mp3" loop></audio>
 
   <script>
     const photos = [
       "photo1.jpg", "photo2.jpg", "photo3.jpg", "photo4.jpg", "photo5.jpg",
-      "photo6.jpg", "photo7.jpg", "photo8.jpg", "photo9.jpg", "photo10.jpg", "photo11.jpg"
+      "photo6.jpg", "photo7.jpg", "photo8.jpg", "photo9.jpg", "photo10.jpg", "photo11.jpg", "photo12.jpg"
     ];
     let current = 0;
 
     document.getElementById('message').textContent =
-      'Привет! Сейчас ты читаешь этот текст и не подозреваешь, что стала старше на один год. Я сделал это от чистого сердца. Спасибо тебе за то, что появилась в моей жизни с 2018 года. Никогда не забуду все наши прогулки, общение, секреты и многое другое — это очень важно для меня. Спасибо за все ночи напролёт, за поддержку, за наши кайфовые скандалы (с тобой очень классно ссориться, а потом мириться). Если вдруг всё станет сложно и я не справлюсь — я построю рядом с домом церковь (естественно рядом будет Land Cruiser) и буду молиться, ведьма 😄. Желаю тебе много здоровья, удачи и миллионы денег. Оставайся такой же крутой и весёлой, и не злись на меня, пиписюлька любименькая 😘';
+      'Привет! Сейчас ты читаешь этот текст и не подозреваешь, что стала старше на один год. Я сделал это от чистого сердца. Спасибо тебе за то, что появилась в моей жизни с 2018 года. Никогда не забуду все наши прогулки, общение, секреты и многое другое — это очень важно для меня. Спасибо за все ночи напролёт, за поддержку, за наши кайфовые скандалы (с тобой очень классно ссориться, а потом мириться). Если вдруг всё станет сложно и я не справлюсь — я построю рядом с домом церковь (естественно рядом будет Land Cruiser) и буду молиться, ведьма 😄. Желаю тебе много здоровья, удачи и миллионы денег. Оставайся такой же крутой и весёлой, и не злись на меня если иногда заставляю нервничать(я же должен вызывать эмоции) Спасибо тебе за всё 😘';
 
     function startShow() {
       document.getElementById('textScreen').style.display = 'none';
       document.getElementById('photoScreen').style.display = 'flex';
 
       const music = document.getElementById('music');
-      music.currentTime = 30;
+      music.currentTime = 32;
       music.play();
 
       showNextPhoto();
@@ -89,11 +108,16 @@
     function showNextPhoto() {
       const img = document.getElementById('photo');
       img.style.opacity = 0;
+      img.style.animation = 'none';
+      void img.offsetWidth;
+
       setTimeout(() => {
         img.src = photos[current];
         img.onload = () => {
+          img.style.animation = 'fadePhoto 1s ease-in-out';
           img.style.opacity = 1;
         };
+
         current = (current + 1) % photos.length;
         setTimeout(showNextPhoto, 3000);
       }, 500);
@@ -101,4 +125,3 @@
   </script>
 </body>
 </html>
-
