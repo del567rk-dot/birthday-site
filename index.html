@@ -15,23 +15,21 @@
     #textScreen {
       background-color: #fce4ec;
       color: #d81b60;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
       align-items: center;
+      justify-content: flex-start;
       padding: 5vw;
       box-sizing: border-box;
       text-align: center;
       overflow-y: auto;
-      position: relative;
     }
     #message {
       font-size: calc(16px + 1.2vw);
       line-height: 1.4em;
       animation: fadeIn 3s ease-in-out;
       margin-bottom: 100px;
-      padding-bottom: 80px;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
@@ -47,9 +45,10 @@
       display: none;
       justify-content: center;
       align-items: center;
+      perspective: 1200px;
     }
     #photo, #video {
-      max-width: 90vw;
+      width: 60vw;
       max-height: 90vh;
       border: 8px solid white;
       box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
@@ -57,18 +56,20 @@
       display: block;
       margin: auto;
     }
-    .smallPhoto {
-      transform: translateY(20px) scale(1.05);
-      box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+    .spin3d {
+      animation: spin3d 5s linear infinite;
+      transform-style: preserve-3d;
     }
-    @keyframes fadePhoto {
-      0% { opacity: 0; transform: scale(1.05); filter: brightness(1.2); }
-      50% { opacity: 1; transform: scale(1); filter: brightness(1); }
-      100% { opacity: 1; }
+    @keyframes spin3d {
+      from { transform: rotateY(0deg); }
+      to { transform: rotateY(360deg); }
     }
     button {
-      margin-top: auto;
-      margin-bottom: 20px;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
       padding: 12px 24px;
       font-size: 1.2em;
       background-color: #d81b60;
@@ -128,24 +129,16 @@
       }
 
       const img = document.getElementById('photo');
-      img.classList.remove('smallPhoto');
-      img.style.opacity = 0;
-      img.style.animation = 'none';
+      img.classList.remove('spin3d');
       void img.offsetWidth;
 
-      setTimeout(() => {
-        img.src = photos[current];
-        img.onload = () => {
-          if (img.naturalWidth < 800 || img.naturalHeight < 600) {
-            img.classList.add('smallPhoto');
-          }
-          img.style.animation = 'fadePhoto 1s ease-in-out';
-          img.style.opacity = 1;
-        };
+      img.src = photos[current];
+      img.onload = () => {
+        img.classList.add('spin3d');
+      };
 
-        current = (current + 1) % photos.length;
-        setTimeout(showNextPhoto, photoDuration);
-      }, 500);
+      current = (current + 1) % photos.length;
+      setTimeout(showNextPhoto, photoDuration);
     }
 
     function startVideo() {
