@@ -48,10 +48,12 @@
       align-items: center;
     }
     #photo {
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      border-radius: 0;
+      max-width: 90vw;
+      max-height: 90vh;
+      object-fit: contain;
+      border: 8px solid white;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
       opacity: 0;
     }
     @keyframes fadePhoto {
@@ -90,7 +92,8 @@
   <script>
     const photos = [
       "photo1.jpg", "photo2.jpg", "photo3.jpg", "photo4.jpg", "photo5.jpg",
-      "photo6.jpg", "photo7.jpg", "photo8.jpg", "photo9.jpg", "photo10.jpg", "photo11.jpg", "photo12.jpg"
+      "photo6.jpg", "photo7.jpg", "photo8.jpg", "photo9.jpg", "photo10.jpg",
+      "photo11.jpg", "photo12.jpg"
     ];
     let current = 0;
 
