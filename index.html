@@ -55,6 +55,11 @@
       box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
       border-radius: 12px;
       opacity: 0;
+      transition: transform 0.5s ease;
+    }
+    .smallPhoto {
+      transform: translateY(20px) scale(1.05);
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
     }
     @keyframes fadePhoto {
       0% { opacity: 0; transform: scale(1.05); filter: brightness(1.2); }
@@ -113,6 +118,7 @@
 
     function showNextPhoto() {
       const img = document.getElementById('photo');
+      img.classList.remove('smallPhoto');
       img.style.opacity = 0;
       img.style.animation = 'none';
       void img.offsetWidth;
@@ -120,6 +126,9 @@
       setTimeout(() => {
         img.src = photos[current];
         img.onload = () => {
+          if (img.naturalWidth < 800 || img.naturalHeight < 600) {
+            img.classList.add('smallPhoto');
+          }
           img.style.animation = 'fadePhoto 1s ease-in-out';
           img.style.opacity = 1;
         };
