@@ -5,16 +5,9 @@
   <title>С Днём Рождения</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <style>
-    :root {
-      --safe-top: env(safe-area-inset-top);
-      --safe-bottom: env(safe-area-inset-bottom);
-      --safe-left: env(safe-area-inset-left);
-      --safe-right: env(safe-area-inset-right);
-    }
-
     html, body {
       margin: 0;
-      padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left);
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
       background-color: #fce4ec;
       font-family: Arial, sans-serif;
       height: 100dvh;
@@ -24,11 +17,12 @@
     #textScreen {
       background-color: #fce4ec;
       color: #d81b60;
-      min-height: 100dvh;
+      width: 100vw;
+      height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       padding: 5vw;
       text-align: center;
       overflow-y: auto;
@@ -39,6 +33,7 @@
       line-height: 1.4em;
       animation: fadeIn 3s ease-in-out;
       margin-bottom: 100px;
+      max-width: 800px;
     }
 
     @keyframes fadeIn {
@@ -60,30 +55,22 @@
     }
 
     #photo {
-      width: 90vw;
-      max-height: 90vh;
+      max-width: 100vw;
+      max-height: 100vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      background-color: black;
       border: 8px solid white;
       box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
       border-radius: 12px;
       display: block;
       margin: auto;
-      max-width: 100%;
-      height: auto;
-    }
-
-    .spin3d {
-      animation: spin3d 2s linear infinite;
-      transform-style: preserve-3d;
-    }
-
-    @keyframes spin3d {
-      from { transform: rotateY(0deg); }
-      to { transform: rotateY(360deg); }
     }
 
     button {
       position: fixed;
-      bottom: calc(20px + var(--safe-bottom));
+      bottom: calc(20px + env(safe-area-inset-bottom));
       left: 50%;
       transform: translateX(-50%);
       z-index: 10;
@@ -95,6 +82,45 @@
       cursor: pointer;
       border-radius: 8px;
     }
+
+    @keyframes drop {
+      0% { opacity: 0; transform: translateY(-200px) scale(0.8); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes spin {
+      0% { opacity: 0; transform: rotateY(180deg) scale(0.5); }
+      100% { opacity: 1; transform: rotateY(0deg) scale(1); }
+    }
+
+    @keyframes zoom {
+      0% { opacity: 0; transform: scale(0.2); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      50% { transform: translateX(10px); }
+      75% { transform: translateX(-10px); }
+    }
+
+    @keyframes swirl {
+      0% { opacity: 0; transform: rotate(360deg) scale(0.3); }
+      100% { opacity: 1; transform: rotate(0deg) scale(1); }
+    }
+
+    @keyframes slide {
+      0% { opacity: 0; transform: translateX(-100vw); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+
+    .effect-drop   { animation: drop 1.2s ease-out; }
+    .effect-spin   { animation: spin 1.2s ease-out; }
+    .effect-zoom   { animation: zoom 1.2s ease-out; }
+    .effect-shake  { animation: shake 0.6s ease-out; }
+    .effect-swirl  { animation: swirl 1.2s ease-out; }
+    .effect-slide  { animation: slide 1.2s ease-out; }
   </style>
 </head>
 <body>
@@ -108,37 +134,69 @@
     <img id="photo" src="" alt="Фото">
   </div>
 
-  <audio id="music" src="music.mp3" loop></audio>
+  <audio id="musicIntro" src="music1.mp3" loop></audio>
+  <audio id="musicMain" src="music.mp3" loop></audio>
 
-<script>
-  const photos = [
-    "photo1.jpg", "photo2.jpg", "photo3.jpg", "photo4.jpg", "photo5.jpg",
-    "photo6.jpg", "photo7.jpg", "photo8.jpg", "photo9.jpg", "photo10.jpg",
-    "photo11.jpg", "photo12.jpg", "photo13.jpg", "photo14.jpg", "photo15.jpg",
-    "photo16.jpg", "photo17.jpg", "photo18.jpg", "photo19.jpg", "photo20.jpg",
-    "photo21.jpg", "photo22.jpg", "photo23.jpg", "photo24.jpg"
-  ];
-  let current = 0;
-  const photoDuration = 1400;
+  <script>
+    const photos = Array.from({ length: 24 }, (_, i) => `photo${i + 1}.jpg`);
+    const effects = ['effect-drop', 'effect-spin', 'effect-zoom', 'effect-shake', 'effect-swirl', 'effect-slide'];
+    let current = 0;
+    const photoDuration = 1400;
+
+    const musicIntro = document.getElementById('musicIntro');
+    const musicMain = document.getElementById('musicMain');
+
+    window.addEventListener('load', () => {
+      musicIntro.volume = 1;
+      musicIntro.play().catch(() => {
+        document.body.addEventListener('click', () => {
+          musicIntro.play();
+        }, { once: true });
+      });
+    });
 
     document.getElementById('message').textContent = 'Привет! Сейчас ты читаешь этот текст и не подозреваешь, что стала старше на один год. Я сделал это от чистого сердца. Спасибо тебе за то, что появилась в моей жизни с 2018 года. Никогда не забуду все наши прогулки, общение, секреты и многое другое — это очень важно для меня. Спасибо за поддержку, за наши кайфовые скандалы (с тобой очень классно ссориться, а потом мириться). Если вдруг ты меня задолбаешь — я построю рядом с твоим домом церковь (естественно рядом будет Land Cruiser) и буду молиться ведьма, ОЧЕНЬ. ГРОМКО. ЧТОБЫ ТЫ СЛЫШАЛА)) 😄. Желаю тебе много здоровья, удачи и миллионы денег. Оставайся такой же крутой и весёлой, и не злись на меня если иногда заставляю нервничать(я же должен вызывать эмоции) 😘';
+
+    function fadeOutAudio(audio, callback) {
+      const fadeInterval = setInterval(() => {
+        if (audio.volume > 0.05) {
+          audio.volume -= 0.05;
+        } else {
+          clearInterval(fadeInterval);
+          audio.pause();
+          audio.volume = 1;
+          if (callback) callback();
+        }
+      }, 50);
+    }
 
     function startShow() {
       document.getElementById('textScreen').style.display = 'none';
       document.getElementById('photoScreen').style.display = 'flex';
-      const music = document.getElementById('music');
-      music.currentTime = 195;
-      music.play();
+
+      if (navigator.vibrate) {
+        navigator.vibrate([100, 50, 100]);
+      }
+
+      fadeOutAudio(musicIntro, () => {
+        musicMain.currentTime = 0;
+        musicMain.play();
+      });
+
       showNextPhoto();
     }
 
     function showNextPhoto() {
       const img = document.getElementById('photo');
-      img.classList.remove('spin3d');
+      effects.forEach(e => img.classList.remove(e));
       void img.offsetWidth;
       img.src = photos[current];
+      const randomEffect = effects[Math.floor(Math.random() * effects.length)];
       img.onload = () => {
-        img.classList.add('spin3d');
+        img.classList.add(randomEffect);
+        if (navigator.vibrate) {
+          navigator.vibrate(100);
+        }
       };
       current = (current + 1) % photos.length;
       setTimeout(showNextPhoto, photoDuration);
@@ -146,5 +204,3 @@
   </script>
 </body>
 </html>
-
-
