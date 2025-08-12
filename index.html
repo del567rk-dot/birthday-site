@@ -38,6 +38,8 @@
       margin-bottom: 100px;
       max-width: 800px;
       white-space: pre-wrap;
+      touch-action: none;
+      transform-origin: center center;
     }
     #photoScreen {
       position: absolute;
@@ -195,6 +197,38 @@
         setTimeout(() => confetti.remove(), 4000);
       }
     }
+
+    // 👇 Добавлено масштабирование двумя пальцами
+    let initialDistance = null;
+    let currentScale = 1;
+
+    messageElement.addEventListener('pointerdown', e => {
+      messageElement.setPointerCapture(e.pointerId);
+    });
+
+    messageElement.addEventListener('pointermove', e => {
+      const pointers = Array.from(messageElement.getPointerList ? messageElement.getPointerList() : []);
+      if (pointers.length === 2) {
+        const dx = pointers[0].clientX - pointers[1].clientX;
+        const dy = pointers[0].clientY - pointers[1].clientY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (initialDistance === null) {
+          initialDistance = distance;
+        } else {
+          const scale = distance / initialDistance;
+          currentScale = Math.min(Math.max(scale, 0.5), 3);
+          messageElement.style.transform = `scale(${currentScale})`;
+        }
+      }
+    });
+
+        messageElement.addEventListener('pointerup', () => {
+      initialDistance = null;
+    });
+
+    messageElement.addEventListener('pointercancel', () => {
+      initialDistance = null;
+    });
   </script>
 </body>
 </html>
