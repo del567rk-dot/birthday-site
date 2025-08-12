@@ -16,10 +16,8 @@
     }
     #textScreen {
       position: fixed;
-      top: env(safe-area-inset-top, 0);
-      left: env(safe-area-inset-left, 0);
-      right: env(safe-area-inset-right, 0);
-      bottom: env(safe-area-inset-bottom, 0);
+      top: 0;
+      left: 0;
       width: 100vw;
       height: 100dvh;
       background-color: #fce4ec;
@@ -27,19 +25,38 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       padding: 5vw;
       text-align: center;
       box-sizing: border-box;
     }
+    #messageContainer {
+      width: 100%;
+      max-width: 800px;
+      flex: 1;
+      overflow-y: auto;
+      margin-top: 20px;
+      margin-bottom: 100px;
+    }
     #message {
       font-size: calc(16px + 1.2vw);
       line-height: 1.4em;
-      margin-bottom: 100px;
-      max-width: 800px;
       white-space: pre-wrap;
       touch-action: none;
       transform-origin: center center;
+    }
+    button {
+      position: fixed;
+      bottom: calc(20px + env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      padding: 12px 24px;
+      font-size: 1.2em;
+      background-color: #d81b60;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 8px;
     }
     #photoScreen {
       position: absolute;
@@ -63,20 +80,6 @@
       border-radius: 12px;
       display: block;
       margin: auto;
-    }
-    button {
-      position: fixed;
-      bottom: calc(20px + env(safe-area-inset-bottom));
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
-      padding: 12px 24px;
-      font-size: 1.2em;
-      background-color: #d81b60;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 8px;
     }
     .confetti {
       position: fixed;
@@ -104,8 +107,9 @@
 </head>
 <body>
   <div id="textScreen">
-    <h1>🎉 Поздравление от Кирилла Александровича 🎉</h1>
-    <p id="message"></p>
+    <div id="messageContainer">
+      <p id="message"></p>
+    </div>
     <button onclick="startShow()">Нажми меня</button>
   </div>
   <div id="photoScreen">
@@ -198,7 +202,7 @@
       }
     }
 
-    // 👇 Добавлено масштабирование двумя пальцами
+    // Масштабирование двумя пальцами
     let initialDistance = null;
     let currentScale = 1;
 
