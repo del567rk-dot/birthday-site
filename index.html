@@ -142,7 +142,7 @@
       document.getElementById('photoScreen').style.display = 'flex';
       if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
       fadeOutAudio(musicIntro, () => {
-        musicMain.currentTime = 0;
+        musicMain.currentTime = 4;
         musicMain.play();
       });
       showNextPhoto();
@@ -179,3 +179,4 @@
   </script>
 </body>
 </html>
+
