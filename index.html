@@ -29,14 +29,14 @@
       text-align: center;
       box-sizing: border-box;
     }
-    #messageContainer {
-      width: 100%;
-      max-width: 800px;
-      flex: 1;
-      overflow-y: auto;
-      margin-top: 20px;
-      margin-bottom: 100px;
-    }
+   #messageContainer {
+  width: 100%;
+  max-width: 800px;
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 0px;       /* 👈 Было 20px — теперь 0 */
+  margin-bottom: 100px;  /* Защита от перекрытия кнопкой */
+   }
     #message {
       font-size: calc(16px + 1.2vw);
       line-height: 1.4em;
