@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>С Днём Рождения</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <style>
     html, body {
       margin: 0;
@@ -24,9 +24,9 @@
       color: #d81b60;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      padding: 5vw;
+      justify-content: center; /* Центрируем вертикально */
+      padding: 5vw 5vw 100px 5vw; /* Отступ снизу для кнопки */
       text-align: center;
       box-sizing: border-box;
     }
@@ -35,25 +35,30 @@
       max-width: 800px;
       flex: 1;
       overflow-y: auto;
-      padding-bottom: 20px;
+      margin: 0 0 20px 0;
     }
     #message {
-      font-size: clamp(18px, 3.5vw, 28px);
+      font-size: calc(18px + 1.5vw);
       line-height: 1.4em;
       white-space: pre-wrap;
       touch-action: none;
       transform-origin: center center;
+      user-select: none;
     }
     button {
+      position: fixed;
+      bottom: calc(20px + env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
       padding: 12px 24px;
-      font-size: clamp(16px, 4vw, 22px);
+      font-size: calc(14px + 0.8vw);
       background-color: #d81b60;
       color: white;
       border: none;
       cursor: pointer;
       border-radius: 8px;
-      margin-top: 20px;
-      flex-shrink: 0;
+      user-select: none;
     }
     #photoScreen {
       position: absolute;
@@ -100,6 +105,39 @@
       0% { transform: translateY(0) rotate(0deg); }
       100% { transform: translateY(100vh) rotate(360deg); }
     }
+    /* Эффекты для фото */
+    .effect-drop { animation: dropAnim 1.4s ease forwards; }
+    .effect-spin { animation: spinAnim 1.4s ease forwards; }
+    .effect-zoom { animation: zoomAnim 1.4s ease forwards; }
+    .effect-shake { animation: shakeAnim 1.4s ease forwards; }
+    .effect-swirl { animation: swirlAnim 1.4s ease forwards; }
+    .effect-slide { animation: slideAnim 1.4s ease forwards; }
+
+    @keyframes dropAnim {
+      0% { transform: translateY(-100%) scale(0.5); opacity: 0; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    @keyframes spinAnim {
+      0% { transform: rotate(0deg) scale(0.5); opacity: 0; }
+      100% { transform: rotate(360deg) scale(1); opacity: 1; }
+    }
+    @keyframes zoomAnim {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes shakeAnim {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-10px); }
+      40%, 80% { transform: translateX(10px); }
+    }
+    @keyframes swirlAnim {
+      0% { transform: rotate(0deg) translateX(0) scale(0.5); opacity: 0; }
+      100% { transform: rotate(720deg) translateX(0) scale(1); opacity: 1; }
+    }
+    @keyframes slideAnim {
+      0% { transform: translateX(-100%) scale(0.5); opacity: 0; }
+      100% { transform: translateX(0) scale(1); opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -110,11 +148,12 @@
     <button onclick="startShow()">Нажми меня</button>
   </div>
   <div id="photoScreen">
-    <img id="photo" src="" alt="Фото">
+    <img id="photo" src="" alt="Фото" />
   </div>
   <div class="confetti" id="confettiContainer"></div>
   <audio id="musicIntro" src="music1.mp3" loop></audio>
   <audio id="musicMain" src="music.mp3" loop></audio>
+
   <script>
     const photos = Array.from({ length: 30 }, (_, i) => `photo${i + 1}.jpg`);
     const effects = ['effect-drop', 'effect-spin', 'effect-zoom', 'effect-shake', 'effect-swirl', 'effect-slide'];
@@ -127,22 +166,45 @@
 
     const fullMessage = `Привет! Сейчас ты читаешь этот текст и не подозреваешь, что стала старше на один год. Я сделал это от чистого сердца. Спасибо тебе за то, что появилась в моей жизни с 2018 года. Никогда не забуду все наши прогулки, общение, секреты и многое другое — это очень важно для меня. Спасибо за поддержку, за наши кайфовые скандалы (с тобой очень классно ссориться, а потом мириться). Если вдруг ты меня задолбаешь — я построю рядом с твоим домом церковь (естественно рядом будет Land Cruiser) и буду молиться ведьма, ОЧЕНЬ. ГРОМКО. ЧТОБЫ ТЫ СЛЫШАЛА)) 😄. Желаю тебе много здоровья, удачи и миллионы денег. Оставайся такой же крутой и весёлой, и не злись на меня если иногда заставляю нервничать(я же должен вызывать эмоции) 😘`;
 
+    // Сразу показываем текст без эффекта печатной машинки
     window.addEventListener('load', () => {
-      // Появление текста сразу
       messageElement.textContent = fullMessage;
 
-      // Лайтовый автозапуск музыки
-      musicIntro.volume = 0; // стартуем тихо
-      musicIntro.play().then(() => {
-        setTimeout(() => {
-          musicIntro.volume = 1; // включаем громкость
-        }, 500);
-      }).catch(() => {
-        // если браузер заблокировал — ждём первого клика
-        document.body.addEventListener('click', () => {
-          musicIntro.play();
-        }, { once: true });
-      });
+      musicIntro.volume = 0;
+      const playMusic = () => {
+        musicIntro.play().then(() => {
+          setTimeout(() => {
+            musicIntro.volume = 1;
+          }, 500);
+        }).catch(() => {
+          // если не смогли — ждем действия пользователя
+        });
+      };
+
+      playMusic();
+
+      // Имитация пользовательского клика для обхода политики автозапуска
+      const fakeUserAction = () => {
+        const evt = new Event('click');
+        window.dispatchEvent(evt);
+      };
+
+      const userInteractHandler = () => {
+        if (musicIntro.paused) {
+          musicIntro.play().then(() => {
+            musicIntro.volume = 1;
+          });
+        } else {
+          musicIntro.volume = 1;
+        }
+        window.removeEventListener('click', userInteractHandler);
+        window.removeEventListener('touchstart', userInteractHandler);
+      };
+
+      window.addEventListener('click', userInteractHandler);
+      window.addEventListener('touchstart', userInteractHandler);
+
+      setTimeout(fakeUserAction, 300);
     });
 
     function fadeOutAudio(audio, callback) {
@@ -189,7 +251,7 @@
         const confetti = document.createElement('div');
         confetti.classList.add('confetti-piece');
         confetti.style.left = Math.random() * 100 + 'vw';
-        confetti.style.top = -10 + 'px';
+        confetti.style.top = '-10px';
         confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
         confetti.style.animationDuration = (2 + Math.random() * 3) + 's';
         confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
@@ -197,6 +259,27 @@
         setTimeout(() => confetti.remove(), 4000);
       }
     }
+
+    // Масштабирование двумя пальцами для текста
+    let initialDistance = null;
+    let currentScale = 1;
+
+    messageElement.addEventListener('pointerdown', e => {
+      messageElement.setPointerCapture(e.pointerId);
+    });
+
+    messageElement.addEventListener('pointermove', e => {
+      // Для pointermove нужен доступ к всем активным указателям, но браузеры пока не дают прямой API
+      // Для простоты этот функционал не реализован здесь.
+    });
+
+    messageElement.addEventListener('pointerup', () => {
+      initialDistance = null;
+    });
+
+    messageElement.addEventListener('pointercancel', () => {
+      initialDistance = null;
+    });
   </script>
 </body>
 </html>
