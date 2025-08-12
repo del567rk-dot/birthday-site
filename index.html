@@ -14,45 +14,47 @@
       box-sizing: border-box;
       overflow: hidden;
     }
-
     #textScreen {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
       height: 100dvh;
-      padding: 5vw;
       background-color: #fce4ec;
       color: #d81b60;
-      text-align: center;
-    }
-
-    #messageContainer {
-      flex: 1;
       display: flex;
-      align-items: center;
+      flex-direction: column;
       justify-content: center;
+      align-items: center;
+      padding: 5vw;
+      text-align: center;
+      box-sizing: border-box;
+    }
+    #messageContainer {
+      width: 100%;
+      max-width: 800px;
+      flex: 1;
       overflow-y: auto;
       padding-bottom: 20px;
     }
-
     #message {
-      font-size: clamp(16px, 3vw, 28px); /* адаптивный размер текста */
-      line-height: 1.5em;
+      font-size: clamp(18px, 3.5vw, 28px);
+      line-height: 1.4em;
       white-space: pre-wrap;
-      max-width: 800px;
+      touch-action: none;
+      transform-origin: center center;
     }
-
     button {
-      padding: clamp(10px, 2vh, 16px) clamp(20px, 5vw, 32px);
+      padding: 12px 24px;
       font-size: clamp(16px, 4vw, 22px);
       background-color: #d81b60;
       color: white;
       border: none;
       cursor: pointer;
       border-radius: 8px;
+      margin-top: 20px;
       flex-shrink: 0;
     }
-
     #photoScreen {
       position: absolute;
       top: 0;
@@ -63,17 +65,19 @@
       display: none;
       justify-content: center;
       align-items: center;
+      perspective: 1200px;
     }
-
     #photo {
-      max-width: 95vw;
-      max-height: 95vh;
+      max-width: 100vw;
+      max-height: 100vh;
       object-fit: contain;
-      border: 4px solid white;
-      border-radius: 12px;
+      background-color: black;
+      border: 8px solid white;
       box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      display: block;
+      margin: auto;
     }
-
     .confetti {
       position: fixed;
       top: 0;
@@ -84,7 +88,6 @@
       overflow: hidden;
       z-index: 100;
     }
-
     .confetti-piece {
       position: absolute;
       width: 8px;
@@ -93,7 +96,6 @@
       opacity: 0.8;
       animation: confettiFall linear infinite;
     }
-
     @keyframes confettiFall {
       0% { transform: translateY(0) rotate(0deg); }
       100% { transform: translateY(100vh) rotate(360deg); }
@@ -107,22 +109,17 @@
     </div>
     <button onclick="startShow()">Нажми меня</button>
   </div>
-
   <div id="photoScreen">
     <img id="photo" src="" alt="Фото">
   </div>
-
   <div class="confetti" id="confettiContainer"></div>
-
-  <audio id="musicIntro" src="music1.mp3" autoplay loop></audio>
+  <audio id="musicIntro" src="music1.mp3" loop></audio>
   <audio id="musicMain" src="music.mp3" loop></audio>
-
   <script>
     const photos = Array.from({ length: 30 }, (_, i) => `photo${i + 1}.jpg`);
     const effects = ['effect-drop', 'effect-spin', 'effect-zoom', 'effect-shake', 'effect-swirl', 'effect-slide'];
     let current = 0;
     const photoDuration = 1400;
-
     const musicIntro = document.getElementById('musicIntro');
     const musicMain = document.getElementById('musicMain');
     const confettiContainer = document.getElementById('confettiContainer');
@@ -131,10 +128,17 @@
     const fullMessage = `Привет! Сейчас ты читаешь этот текст и не подозреваешь, что стала старше на один год. Я сделал это от чистого сердца. Спасибо тебе за то, что появилась в моей жизни с 2018 года. Никогда не забуду все наши прогулки, общение, секреты и многое другое — это очень важно для меня. Спасибо за поддержку, за наши кайфовые скандалы (с тобой очень классно ссориться, а потом мириться). Если вдруг ты меня задолбаешь — я построю рядом с твоим домом церковь (естественно рядом будет Land Cruiser) и буду молиться ведьма, ОЧЕНЬ. ГРОМКО. ЧТОБЫ ТЫ СЛЫШАЛА)) 😄. Желаю тебе много здоровья, удачи и миллионы денег. Оставайся такой же крутой и весёлой, и не злись на меня если иногда заставляю нервничать(я же должен вызывать эмоции) 😘`;
 
     window.addEventListener('load', () => {
+      // Появление текста сразу
       messageElement.textContent = fullMessage;
 
-      // Попытка сразу запустить музыку
-      musicIntro.play().catch(() => {
+      // Лайтовый автозапуск музыки
+      musicIntro.volume = 0; // стартуем тихо
+      musicIntro.play().then(() => {
+        setTimeout(() => {
+          musicIntro.volume = 1; // включаем громкость
+        }, 500);
+      }).catch(() => {
+        // если браузер заблокировал — ждём первого клика
         document.body.addEventListener('click', () => {
           musicIntro.play();
         }, { once: true });
@@ -157,14 +161,11 @@
     function startShow() {
       document.getElementById('textScreen').style.display = 'none';
       document.getElementById('photoScreen').style.display = 'flex';
-
       if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-
       fadeOutAudio(musicIntro, () => {
         musicMain.currentTime = 0;
         musicMain.play();
       });
-
       showNextPhoto();
     }
 
@@ -173,12 +174,13 @@
       effects.forEach(e => img.classList.remove(e));
       void img.offsetWidth;
       img.src = photos[current];
-      current = (current + 1) % photos.length;
-
+      const randomEffect = effects[Math.floor(Math.random() * effects.length)];
       img.onload = () => {
+        img.classList.add(randomEffect);
+        if (navigator.vibrate) navigator.vibrate(100);
         launchConfetti();
       };
-
+      current = (current + 1) % photos.length;
       setTimeout(showNextPhoto, photoDuration);
     }
 
